@@ -4,6 +4,7 @@ import heroImg from "@/assets/hero.jpg";
 import dishAsset from "@/assets/IMG_9676.jpeg.asset.json";
 import menuAsset from "@/assets/IMG_9680.jpeg.asset.json";
 import empanadaAsset from "@/assets/IMG_9681.jpeg.asset.json";
+import logoAsset from "@/assets/logo.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
