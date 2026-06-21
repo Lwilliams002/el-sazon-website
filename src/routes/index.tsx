@@ -319,7 +319,7 @@ function Visit() {
         </div>
         <div className="overflow-hidden rounded-xl border border-border shadow-flame">
           <iframe
-            title="Mapa El Sazón de Nere"
+            title="Mapa El Sazón de las Mercedes"
             src="https://www.google.com/maps?q=1520+S+Mason+Rd+Katy+TX+77450&output=embed"
             className="h-full min-h-[360px] w-full"
             loading="lazy"
