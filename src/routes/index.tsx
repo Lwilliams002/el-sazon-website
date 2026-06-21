@@ -4,6 +4,7 @@ import heroImg from "@/assets/hero.jpg";
 import dishAsset from "@/assets/IMG_9676.jpeg.asset.json";
 import menuAsset from "@/assets/IMG_9680.jpeg.asset.json";
 import empanadaAsset from "@/assets/IMG_9681.jpeg.asset.json";
+import logoAsset from "@/assets/logo.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -68,9 +69,13 @@ function Header() {
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
         <a href="#top" className="flex items-center gap-2.5">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-flame-gradient shadow-flame">
-            <Flame className="h-5 w-5 text-charcoal" strokeWidth={2.5} />
-          </span>
+          <img
+            src={logoAsset.url}
+            alt="El Sazón De Nere"
+            width={40}
+            height={40}
+            className="h-10 w-10 object-contain"
+          />
           <span className="font-display text-2xl tracking-wide leading-none">
             El Sazón <span className="text-flame-gradient">De Nere</span>
           </span>
