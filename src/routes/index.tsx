@@ -62,7 +62,7 @@ function Header() {
         <a href="#top" className="flex items-center">
           <img
             src={logoImg}
-            alt="El Sazón De Nere"
+            alt="El Sazón De Las Mercedes"
             width={240}
             height={96}
             className="h-20 w-auto object-contain"
@@ -319,7 +319,7 @@ function Visit() {
         </div>
         <div className="overflow-hidden rounded-xl border border-border shadow-flame">
           <iframe
-            title="Mapa El Sazón de Nere"
+            title="Mapa El Sazón de las Mercedes"
             src="https://www.google.com/maps?q=1520+S+Mason+Rd+Katy+TX+77450&output=embed"
             className="h-full min-h-[360px] w-full"
             loading="lazy"
@@ -355,7 +355,7 @@ function Footer() {
     <footer className="border-t border-border/60 bg-background py-10">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-5 text-sm text-muted-foreground md:flex-row">
         <p className="font-display text-lg tracking-wide text-foreground">
-          El Sazón <span className="text-flame-gradient">De Nere</span> · Mateo 4:4
+          El Sazón <span className="text-flame-gradient">De Las Mercedes</span> · Mateo 4:4
         </p>
         <p>© {new Date().getFullYear()} — Como hecho en casa. Katy, TX.</p>
       </div>
