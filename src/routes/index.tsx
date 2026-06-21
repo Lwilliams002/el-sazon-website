@@ -67,18 +67,15 @@ function Header() {
   ];
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
-        <a href="#top" className="flex items-center gap-2.5">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3">
+        <a href="#top" className="flex items-center">
           <img
             src={logoAsset.url}
             alt="El Sazón De Nere"
-            width={40}
-            height={40}
-            className="h-10 w-10 object-contain"
+            width={180}
+            height={64}
+            className="h-14 w-auto object-contain"
           />
-          <span className="font-display text-2xl tracking-wide leading-none">
-            El Sazón <span className="text-flame-gradient">De Nere</span>
-          </span>
         </a>
         <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-muted-foreground">
           {links.map(l => (
