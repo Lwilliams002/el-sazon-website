@@ -105,15 +105,3 @@
 @utility bg-hero-gradient { background: var(--gradient-hero); }
 @utility shadow-flame { box-shadow: var(--shadow-flame); }
 
-@utility noise-overlay {
-  position: relative;
-}
-@utility noise-overlay::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image: radial-gradient(oklch(1 0 0 / 0.03) 1px, transparent 1px);
-  background-size: 3px 3px;
-  mix-blend-mode: overlay;
-}
