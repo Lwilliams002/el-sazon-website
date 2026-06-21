@@ -274,28 +274,37 @@ function Catering() {
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/40" />
       </div>
       <div className="mx-auto max-w-7xl px-5">
-        <div className="max-w-2xl">
-          <p className="font-script text-2xl text-secondary">Eventos & Pedidos Grandes</p>
-          <h2 className="mt-1 text-5xl md:text-6xl">Catering para tus mejores eventos</h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Bandejas de tequeños, empanadas, pasticho, arroz con pollo, pollo al grill, carne mechada,
-            lomo negro, fajitas y más. Hacemos que tu evento sepa a casa.
-          </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <a
-              href={`tel:${PHONE.replace(/-/g, "")}`}
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 font-semibold text-primary-foreground transition hover:bg-primary/90"
-            >
-              <Phone className="h-4 w-4" /> Llamar para cotizar
-            </a>
-            <a
-              href={`https://wa.me/12819327408`}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-secondary/60 px-5 py-3 font-semibold text-secondary transition hover:bg-secondary/10"
-            >
-              WhatsApp
-            </a>
+        <div className="flex flex-col items-center gap-10 md:flex-row md:items-center md:gap-16">
+          <div className="max-w-2xl flex-1">
+            <p className="font-script text-2xl text-secondary">Eventos & Pedidos Grandes</p>
+            <h2 className="mt-1 text-5xl md:text-6xl">Catering para tus mejores eventos</h2>
+            <p className="mt-4 text-lg text-muted-foreground">
+              Bandejas de tequeños, empanadas, pasticho, arroz con pollo, pollo al grill, carne mechada,
+              lomo negro, fajitas y más. Hacemos que tu evento sepa a casa.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <a
+                href={`tel:${PHONE.replace(/-/g, "")}`}
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 font-semibold text-primary-foreground transition hover:bg-primary/90"
+              >
+                <Phone className="h-4 w-4" /> Llamar para cotizar
+              </a>
+              <a
+                href={`https://wa.me/12819327408`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-secondary/60 px-5 py-3 font-semibold text-secondary transition hover:bg-secondary/10"
+              >
+                WhatsApp
+              </a>
+            </div>
+          </div>
+          <div className="flex w-full shrink-0 items-center justify-center md:w-auto">
+            <img
+              src={logoImg}
+              alt="El Sazón De Nere"
+              className="w-80 md:w-[420px] drop-shadow-2xl opacity-90 mx-auto"
+            />
           </div>
         </div>
       </div>
