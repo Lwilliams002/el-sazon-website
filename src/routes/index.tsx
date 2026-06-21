@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Flame, MapPin, Phone, Clock, Instagram, UtensilsCrossed, ShoppingBag } from "lucide-react";
 import heroImg from "@/assets/hero.jpg";
-import dishAsset from "@/assets/IMG_9676.jpeg.asset.json";
-import menuAsset from "@/assets/IMG_9680.jpeg.asset.json";
-import empanadaAsset from "@/assets/IMG_9681.jpeg.asset.json";
-import logoAsset from "@/assets/logo.png.asset.json";
+import dishImg from "@/assets/IMG_9676.jpeg";
+import menuImg from "@/assets/IMG_9680.jpeg";
+import empanadaImg from "@/assets/IMG_9681.jpeg";
+import logoImg from "@/assets/logo.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
