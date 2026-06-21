@@ -72,9 +72,9 @@ function Header() {
           <img
             src={logoAsset.url}
             alt="El Sazón De Nere"
-            width={180}
-            height={64}
-            className="h-14 w-auto object-contain"
+            width={240}
+            height={96}
+            className="h-20 w-auto object-contain"
           />
         </a>
         <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-muted-foreground">
