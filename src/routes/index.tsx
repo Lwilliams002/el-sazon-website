@@ -7,15 +7,6 @@ import empanadaImg from "@/assets/IMG_9681.jpeg";
 import logoImg from "@/assets/logo.png";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "El Sazón de Nere — Auténtica Comida Venezolana en Katy, TX" },
-      { name: "description", content: "Arepas, empanadas, pabellón criollo, chivo en coco y más. Comida venezolana como hecha en casa en Katy, TX." },
-      { property: "og:title", content: "El Sazón de Nere — Comida Venezolana en Katy" },
-      { property: "og:description", content: "Auténtica cocina venezolana — como hecha en casa." },
-      { property: "og:image", content: heroImg },
-    ],
-  }),
   component: Home,
 });
 
