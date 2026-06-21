@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Flame, MapPin, Phone, Clock, Instagram, UtensilsCrossed, ShoppingBag } from "lucide-react";
 import heroImg from "@/assets/hero.jpg";
-import dishAsset from "@/assets/IMG_9676.jpeg.asset.json";
-import menuAsset from "@/assets/IMG_9680.jpeg.asset.json";
-import empanadaAsset from "@/assets/IMG_9681.jpeg.asset.json";
-import logoAsset from "@/assets/logo.png.asset.json";
+import dishImg from "@/assets/IMG_9676.jpeg";
+import menuImg from "@/assets/IMG_9680.jpeg";
+import empanadaImg from "@/assets/IMG_9681.jpeg";
+import logoImg from "@/assets/logo.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -70,7 +70,7 @@ function Header() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3">
         <a href="#top" className="flex items-center">
           <img
-            src={logoAsset.url}
+            src={logoImg}
             alt="El Sazón De Nere"
             width={240}
             height={96}
@@ -165,9 +165,9 @@ function About() {
 
 function Specialties() {
   const items = [
-    { img: dishAsset.url, title: "Pabellón Criollo", tag: "Plato nacional" },
-    { img: menuAsset.url, title: "Menú del Día", tag: "Cachapa · Arepa · Desayuno" },
-    { img: empanadaAsset.url, title: "Empanadas Recién Hechas", tag: "Con guasacaca de la casa" },
+    { img: dishImg, title: "Pabellón Criollo", tag: "Plato nacional" },
+    { img: menuImg, title: "Menú del Día", tag: "Cachapa · Arepa · Desayuno" },
+    { img: empanadaImg, title: "Empanadas Recién Hechas", tag: "Con guasacaca de la casa" },
   ];
   return (
     <section id="especialidades" className="mx-auto max-w-7xl px-5 py-20 md:py-28">
