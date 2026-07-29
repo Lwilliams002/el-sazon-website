@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Flame, MapPin, Phone, Clock, Instagram, UtensilsCrossed, ShoppingBag } from "lucide-react";
 import heroImg from "@/assets/hero.jpg";
 import dishImg from "@/assets/IMG_9676.jpeg";
@@ -73,14 +73,12 @@ function Header() {
             <a key={l.href} href={l.href} className="transition hover:text-foreground">{l.label}</a>
           ))}
         </nav>
-        <a
-          href={DOORDASH_URL}
-          target="_blank"
-          rel="noreferrer"
+        <Link
+          to="/menu"
           className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
         >
           <ShoppingBag className="h-4 w-4" /> Ordenar
-        </a>
+        </Link>
       </div>
     </header>
   );
@@ -109,14 +107,12 @@ function Hero() {
             Hecho con cariño en el corazón de Katy.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
-            <a
-              href={DOORDASH_URL}
-              target="_blank"
-              rel="noreferrer"
+            <Link
+              to="/menu"
               className="inline-flex items-center gap-2 rounded-full bg-flame-gradient px-6 py-3.5 text-base font-semibold text-charcoal shadow-flame transition hover:scale-[1.02]"
             >
-              <ShoppingBag className="h-5 w-5" /> Ordenar en DoorDash
-            </a>
+              <ShoppingBag className="h-5 w-5" /> Ordenar en línea
+            </Link>
             <a
               href={`tel:${PHONE.replace(/-/g, "")}`}
               className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-6 py-3.5 text-base font-semibold text-foreground backdrop-blur transition hover:bg-card"
