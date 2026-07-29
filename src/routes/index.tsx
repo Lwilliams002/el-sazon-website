@@ -107,14 +107,12 @@ function Hero() {
             Hecho con cariño en el corazón de Katy.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
-            <a
-              href={DOORDASH_URL}
-              target="_blank"
-              rel="noreferrer"
+            <Link
+              to="/menu"
               className="inline-flex items-center gap-2 rounded-full bg-flame-gradient px-6 py-3.5 text-base font-semibold text-charcoal shadow-flame transition hover:scale-[1.02]"
             >
-              <ShoppingBag className="h-5 w-5" /> Ordenar en DoorDash
-            </a>
+              <ShoppingBag className="h-5 w-5" /> Ordenar en línea
+            </Link>
             <a
               href={`tel:${PHONE.replace(/-/g, "")}`}
               className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-6 py-3.5 text-base font-semibold text-foreground backdrop-blur transition hover:bg-card"
