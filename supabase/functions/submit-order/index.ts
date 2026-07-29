@@ -109,31 +109,29 @@ Deno.serve(async (req) => {
   if (!parsed.success) return json({ error: parsed.error.flatten() }, 400);
   const input = parsed.data;
 
-  // Server-authoritative pricing: fetch prices for these items
-  const ids = input.items.map((i) => i.id);
-  const { data: menuRows, error: menuErr } = await supabase
-    .from('menu_items')
-    .select('id, name, price, available')
-    .in('id', ids);
-  if (menuErr) return json({ error: menuErr.message }, 500);
-
-  const priceMap = new Map((menuRows ?? []).map((r) => [r.id, r]));
-  const orderItems: any[] = [];
-  let subtotal = 0;
-  for (const it of input.items) {
-    const row = priceMap.get(it.id);
-    if (!row || !row.available) return json({ error: `Item unavailable: ${it.id}` }, 400);
-    const line = Number(row.price) * it.quantity;
-    subtotal += line;
-    orderItems.push({ id: row.id, name: row.name, price: Number(row.price), quantity: it.quantity });
-  }
-  subtotal = Math.round(subtotal * 100) / 100;
-  const tax = Math.round(subtotal * TAX_RATE * 100) / 100;
-  const total = Math.round((subtotal + tax) * 100) / 100;
-
   if (input.mode === 'pending_payment') {
+    // Server-authoritative pricing
+    const ids = input.items.map((i) => i.id);
+    const { data: menuRows, error: menuErr } = await supabase
+      .from('menu_items')
+      .select('id, name, price, available')
+      .in('id', ids);
+    if (menuErr) return json({ error: menuErr.message }, 500);
+
+    const priceMap = new Map((menuRows ?? []).map((r) => [r.id, r]));
+    const orderItems: any[] = [];
+    let subtotal = 0;
+    for (const it of input.items) {
+      const row = priceMap.get(it.id);
+      if (!row || !row.available) return json({ error: `Item unavailable: ${it.id}` }, 400);
+      subtotal += Number(row.price) * it.quantity;
+      orderItems.push({ id: row.id, name: row.name, price: Number(row.price), quantity: it.quantity });
+    }
+    subtotal = Math.round(subtotal * 100) / 100;
+    const tax = Math.round(subtotal * TAX_RATE * 100) / 100;
+    const total = Math.round((subtotal + tax) * 100) / 100;
+
     const order_number = makeOrderNumber();
-    const payment_ref = order_number;
     const { data, error } = await supabase
       .from('orders')
       .insert({
@@ -147,7 +145,7 @@ Deno.serve(async (req) => {
         tax,
         total,
         status: 'pending',
-        payment_ref,
+        payment_ref: order_number,
       })
       .select()
       .single();
