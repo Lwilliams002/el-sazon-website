@@ -2,7 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { CheckCircle2, Clock } from 'lucide-react';
 import { z } from 'zod';
-import { supabase } from '@/integrations/supabase/client';
+import { useCart } from '@/lib/cart';
 import { useCart } from '@/lib/cart';
 import logoImg from '@/assets/logo.png';
 
