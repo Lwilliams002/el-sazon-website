@@ -73,14 +73,12 @@ function Header() {
             <a key={l.href} href={l.href} className="transition hover:text-foreground">{l.label}</a>
           ))}
         </nav>
-        <a
-          href={DOORDASH_URL}
-          target="_blank"
-          rel="noreferrer"
+        <Link
+          to="/menu"
           className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
         >
           <ShoppingBag className="h-4 w-4" /> Ordenar
-        </a>
+        </Link>
       </div>
     </header>
   );
