@@ -40,46 +40,30 @@ function Confirmation() {
     clear();
 
     let cancelled = false;
-    async function load() {
-      const { data: fetched, error: fnErr } = await supabase.functions.invoke('submit-order', {
-        method: 'GET' as any,
-        // supabase-js doesn't support GET query params directly; use fetch fallback
-      });
-      // Fallback to raw fetch since functions.invoke defaults to POST
-      const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/submit-order?order_number=${encodeURIComponent(
-        order!,
-      )}`;
+    const base = import.meta.env.VITE_SUPABASE_URL as string;
+    const apikey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
+
+    // Fire-and-forget: finalize order (mark paid, send to kitchen)
+    fetch(`${base}/functions/v1/submit-order`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey },
+      body: JSON.stringify({ mode: 'finalize', order_number: order }),
+    }).catch(() => {});
+
+    // Fetch order details for display
+    (async () => {
       try {
-        const res = await fetch(url, {
-          headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string },
-        });
+        const res = await fetch(
+          `${base}/functions/v1/submit-order?order_number=${encodeURIComponent(order!)}`,
+          { headers: { apikey } },
+        );
         if (!res.ok) throw new Error(await res.text());
         const json = (await res.json()) as OrderData;
         if (!cancelled) setData(json);
       } catch (err) {
         if (!cancelled) setError(err instanceof Error ? err.message : 'Error');
       }
-      void fetched;
-      void fnErr;
-    }
-    void load();
-
-    // Finalize (mark paid + dispatch to KDS) if user returned from payment
-    fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/submit-order`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string,
-      },
-      body: JSON.stringify({
-        mode: 'finalize',
-        order_number: order,
-        customer_name: 'x',
-        customer_phone: '0000000',
-        order_type: 'pickup',
-        items: [{ id: '00000000-0000-0000-0000-000000000000', quantity: 1 }],
-      }),
-    }).catch(() => {});
+    })();
 
     return () => {
       cancelled = true;
