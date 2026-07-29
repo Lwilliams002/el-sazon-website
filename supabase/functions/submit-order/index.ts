@@ -9,15 +9,19 @@ const ItemSchema = z.object({
   quantity: z.number().int().min(1).max(50),
 });
 
-const OrderSchema = z.object({
-  mode: z.enum(['pending_payment', 'finalize']).default('pending_payment'),
-  order_number: z.string().optional(),
+const PendingSchema = z.object({
+  mode: z.literal('pending_payment'),
   customer_name: z.string().trim().min(1).max(120),
   customer_phone: z.string().trim().min(7).max(30),
   order_type: z.enum(['pickup', 'delivery']),
   notes: z.string().trim().max(500).optional().default(''),
   items: z.array(ItemSchema).min(1).max(100),
 });
+const FinalizeSchema = z.object({
+  mode: z.literal('finalize'),
+  order_number: z.string().min(1),
+});
+const OrderSchema = z.discriminatedUnion('mode', [PendingSchema, FinalizeSchema]);
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
