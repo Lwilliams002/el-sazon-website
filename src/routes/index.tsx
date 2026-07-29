@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Flame, MapPin, Phone, Clock, Instagram, UtensilsCrossed, ShoppingBag } from "lucide-react";
 import heroImg from "@/assets/hero.jpg";
 import dishImg from "@/assets/IMG_9676.jpeg";
