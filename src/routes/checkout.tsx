@@ -80,6 +80,12 @@ function CheckoutPage() {
       const paymentUrl = (data as any)?.payment_url as string | null;
       if (!orderNumber) throw new Error('No se pudo crear la orden');
 
+      try {
+        localStorage.setItem('last_order_number', orderNumber);
+      } catch {
+        /* ignore */
+      }
+
       if (paymentUrl) {
         window.location.href = paymentUrl;
         return;

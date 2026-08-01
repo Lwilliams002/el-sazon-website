@@ -25,12 +25,20 @@ type OrderData = {
 };
 
 function Confirmation() {
-  const { order } = Route.useSearch();
+  const searchParams = Route.useSearch();
   const clear = useCart((s) => s.clear);
   const [data, setData] = useState<OrderData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let order = searchParams.order;
+    if (!order) {
+      try {
+        order = localStorage.getItem('last_order_number') ?? undefined;
+      } catch {
+        /* ignore */
+      }
+    }
     if (!order) {
       setError('Falta el número de orden');
       return;
@@ -67,7 +75,7 @@ function Confirmation() {
     return () => {
       cancelled = true;
     };
-  }, [order, clear]);
+  }, [searchParams.order, clear]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
