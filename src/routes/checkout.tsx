@@ -1,10 +1,23 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowLeft, Minus, Plus, Trash2 } from 'lucide-react';
 import { z } from 'zod';
 import { useCart } from '@/lib/cart';
 import { supabase } from '@/integrations/supabase/client';
 import logoImg from '@/assets/logo.png';
+
+// North Embedded Checkout library (loaded at runtime). It attaches a global
+// `checkout` object with `mount` and `onPaymentComplete`.
+const NORTH_CHECKOUT_JS = 'https://checkout.north.com/checkout.js';
+
+declare global {
+  interface Window {
+    checkout?: {
+      mount: (token: string, containerId: string) => Promise<void> | void;
+      onPaymentComplete: (cb: (data: unknown) => void) => (() => void) | void;
+    };
+  }
+}
 
 export const Route = createFileRoute('/checkout')({
   component: CheckoutPage,
@@ -38,10 +51,52 @@ function CheckoutPage() {
   });
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [checkoutToken, setCheckoutToken] = useState<string | null>(null);
+  const [orderNumber, setOrderNumber] = useState<string | null>(null);
+  const [scriptReady, setScriptReady] = useState(false);
 
   const subtotal = items.reduce((n, i) => n + i.price * i.quantity, 0);
   const tax = Math.round(subtotal * TAX_RATE * 100) / 100;
   const total = Math.round((subtotal + tax) * 100) / 100;
+
+  // Load North's checkout.js once.
+  useEffect(() => {
+    if (window.checkout) {
+      setScriptReady(true);
+      return;
+    }
+    const existing = document.querySelector<HTMLScriptElement>(
+      `script[src="${NORTH_CHECKOUT_JS}"]`,
+    );
+    if (existing) {
+      existing.addEventListener('load', () => setScriptReady(true));
+      return;
+    }
+    const s = document.createElement('script');
+    s.src = NORTH_CHECKOUT_JS;
+    s.async = true;
+    s.onload = () => setScriptReady(true);
+    document.head.appendChild(s);
+  }, []);
+
+  // Mount the embedded checkout form once we have a session token and the script.
+  useEffect(() => {
+    if (!checkoutToken || !scriptReady || !window.checkout) return;
+    Promise.resolve(window.checkout.mount(checkoutToken, 'north-checkout-container')).catch(
+      (e) => {
+        console.error('North mount failed', e);
+        setError('No se pudo cargar el formulario de pago');
+      },
+    );
+    const unsub = window.checkout.onPaymentComplete(() => {
+      // Fulfillment is confirmed server-side via the webhook; just move the
+      // customer to the confirmation page.
+      navigate({ to: '/order-confirmation', search: { order: orderNumber ?? '' } });
+    });
+    return () => {
+      if (typeof unsub === 'function') unsub();
+    };
+  }, [checkoutToken, scriptReady, orderNumber, navigate]);
 
   if (items.length === 0) {
     return (
@@ -76,22 +131,27 @@ function CheckoutPage() {
         },
       });
       if (fnError) throw fnError;
-      const orderNumber = (data as any)?.order_number;
-      const paymentUrl = (data as any)?.payment_url as string | null;
-      if (!orderNumber) throw new Error('No se pudo crear la orden');
+      const createdOrder = (data as any)?.order_number as string | undefined;
+      if (!createdOrder) throw new Error('No se pudo crear la orden');
 
       try {
-        localStorage.setItem('last_order_number', orderNumber);
+        localStorage.setItem('last_order_number', createdOrder);
       } catch {
         /* ignore */
       }
 
-      if (paymentUrl) {
-        window.location.href = paymentUrl;
-        return;
-      }
-      // No payment link configured — go straight to confirmation
-      navigate({ to: '/order-confirmation', search: { order: orderNumber } });
+      // Create a North Embedded Checkout session (amount locked server-side).
+      const { data: sessionData, error: sessionError } = await supabase.functions.invoke(
+        'create-checkout',
+        { body: { order_number: createdOrder } },
+      );
+      if (sessionError) throw sessionError;
+      const token = (sessionData as any)?.token as string | null;
+      if (!token) throw new Error('No se pudo iniciar el pago');
+
+      // Switch the UI to the embedded payment form (mounted by the effect).
+      setOrderNumber(createdOrder);
+      setCheckoutToken(token);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al enviar la orden');
       setSubmitting(false);
@@ -162,64 +222,78 @@ function CheckoutPage() {
             </dl>
           </section>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <h2 className="text-xl">Tus datos</h2>
-            <Field
-              label="Nombre"
-              value={form.customer_name}
-              onChange={(v) => setForm((f) => ({ ...f, customer_name: v }))}
-              required
-            />
-            <Field
-              label="Teléfono"
-              value={form.customer_phone}
-              onChange={(v) => setForm((f) => ({ ...f, customer_phone: v }))}
-              placeholder="281-555-1234"
-              inputMode="tel"
-              required
-            />
-            <div>
-              <label className="text-sm text-muted-foreground">Tipo de orden</label>
-              <div className="mt-2 grid grid-cols-2 gap-2">
-                {(['pickup', 'delivery'] as const).map((t) => (
-                  <button
-                    type="button"
-                    key={t}
-                    onClick={() => setForm((f) => ({ ...f, order_type: t }))}
-                    className={`rounded-lg border px-3 py-2 text-sm transition ${
-                      form.order_type === t
-                        ? 'border-secondary bg-secondary/15 text-secondary'
-                        : 'border-border bg-card/40 text-muted-foreground'
-                    }`}
-                  >
-                    {t === 'pickup' ? 'Recoger' : 'Entrega'}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div>
-              <label className="text-sm text-muted-foreground">Notas (opcional)</label>
-              <textarea
-                value={form.notes}
-                onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
-                rows={3}
-                maxLength={500}
-                className="mt-1 w-full rounded-lg border border-border bg-card/40 p-3 text-sm outline-none focus:border-secondary"
-                placeholder="Alergias, instrucciones, etc."
+          {checkoutToken ? (
+            <section className="space-y-4">
+              <h2 className="text-xl">Pago</h2>
+              <div
+                id="north-checkout-container"
+                className="min-h-[600px] rounded-2xl border border-border bg-card/40"
               />
-            </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
-            <button
-              type="submit"
-              disabled={submitting}
-              className="mt-2 w-full rounded-full bg-flame-gradient px-6 py-3.5 font-semibold text-charcoal shadow-flame transition hover:scale-[1.01] disabled:opacity-60"
-            >
-              {submitting ? 'Procesando…' : `Pagar $${total.toFixed(2)}`}
-            </button>
-            <p className="text-center text-xs text-muted-foreground">
-              Serás redirigido a PayAnywhere para completar el pago de forma segura.
-            </p>
-          </form>
+              {error && <p className="text-sm text-destructive">{error}</p>}
+              <p className="text-center text-xs text-muted-foreground">
+                Pago procesado de forma segura por North. El total no puede modificarse.
+              </p>
+            </section>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <h2 className="text-xl">Tus datos</h2>
+              <Field
+                label="Nombre"
+                value={form.customer_name}
+                onChange={(v) => setForm((f) => ({ ...f, customer_name: v }))}
+                required
+              />
+              <Field
+                label="Teléfono"
+                value={form.customer_phone}
+                onChange={(v) => setForm((f) => ({ ...f, customer_phone: v }))}
+                placeholder="281-555-1234"
+                inputMode="tel"
+                required
+              />
+              <div>
+                <label className="text-sm text-muted-foreground">Tipo de orden</label>
+                <div className="mt-2 grid grid-cols-2 gap-2">
+                  {(['pickup', 'delivery'] as const).map((t) => (
+                    <button
+                      type="button"
+                      key={t}
+                      onClick={() => setForm((f) => ({ ...f, order_type: t }))}
+                      className={`rounded-lg border px-3 py-2 text-sm transition ${
+                        form.order_type === t
+                          ? 'border-secondary bg-secondary/15 text-secondary'
+                          : 'border-border bg-card/40 text-muted-foreground'
+                      }`}
+                    >
+                      {t === 'pickup' ? 'Recoger' : 'Entrega'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="text-sm text-muted-foreground">Notas (opcional)</label>
+                <textarea
+                  value={form.notes}
+                  onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
+                  rows={3}
+                  maxLength={500}
+                  className="mt-1 w-full rounded-lg border border-border bg-card/40 p-3 text-sm outline-none focus:border-secondary"
+                  placeholder="Alergias, instrucciones, etc."
+                />
+              </div>
+              {error && <p className="text-sm text-destructive">{error}</p>}
+              <button
+                type="submit"
+                disabled={submitting}
+                className="mt-2 w-full rounded-full bg-flame-gradient px-6 py-3.5 font-semibold text-charcoal shadow-flame transition hover:scale-[1.01] disabled:opacity-60"
+              >
+                {submitting ? 'Procesando…' : `Pagar $${total.toFixed(2)}`}
+              </button>
+              <p className="text-center text-xs text-muted-foreground">
+                Pago seguro con North. El total ya incluye impuestos.
+              </p>
+            </form>
+          )}
         </div>
       </div>
     </div>
