@@ -93,6 +93,9 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         checkoutId: NORTH_CHECKOUT_ID,
         profileId: NORTH_PROFILE_ID,
+        // North requires a top-level `amount` (in dollars). This is the
+        // server-authoritative order total the customer is charged.
+        amount: Number(order.total),
         products,
       }),
     });
@@ -103,11 +106,11 @@ Deno.serve(async (req) => {
       return json({ error: 'Could not create checkout session' }, 502);
     }
 
-    const session = await res.json();
+    const body = await res.json();
 
-    // Store North's session/transaction id on the order so the webhook can map
-    // the payment notification back to this order.
-    const sessionId = session.id ?? session.sessionId ?? session.token ?? null;
+    // Store North's session id on the order so the webhook can map the payment
+    // notification back to this order.
+    const sessionId = body.session?.id ?? body.id ?? null;
     if (sessionId) {
       await supabase
         .from('orders')
@@ -118,7 +121,8 @@ Deno.serve(async (req) => {
     // The client library needs the session token to mount the form.
     return json({
       order_number: order.order_number,
-      token: session.token ?? session.sessionToken ?? null,
+      token: body.token ?? null,
+      session_id: sessionId,
       total: Number(order.total),
     });
   } catch (err) {
