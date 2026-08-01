@@ -145,9 +145,24 @@ function CheckoutPage() {
         'create-checkout',
         { body: { order_number: createdOrder } },
       );
-      if (sessionError) throw sessionError;
+      // Surface the real error body from the function (invoke hides it by default).
+      if (sessionError) {
+        let detail = sessionError.message;
+        try {
+          const ctx = (sessionError as any)?.context;
+          if (ctx && typeof ctx.json === 'function') {
+            const body = await ctx.json();
+            detail = body?.error ? JSON.stringify(body.error) : detail;
+          }
+        } catch {
+          /* ignore */
+        }
+        console.error('create-checkout error:', detail, sessionData);
+        throw new Error(detail);
+      }
+      console.log('create-checkout response:', sessionData);
       const token = (sessionData as any)?.token as string | null;
-      if (!token) throw new Error('No se pudo iniciar el pago');
+      if (!token) throw new Error('El pago no devolvió un token (revisa los logs de create-checkout)');
 
       // Switch the UI to the embedded payment form (mounted by the effect).
       setOrderNumber(createdOrder);
