@@ -75,7 +75,7 @@ function Confirmation() {
     return () => {
       cancelled = true;
     };
-  }, [order, clear]);
+  }, [searchParams.order, clear]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
