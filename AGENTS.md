@@ -8,3 +8,8 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Frontend rules
+- Define customer-facing colors and typography in `src/styles.css` semantic tokens so home and ordering pages stay consistent.
+- Use the shared Button component for customer actions and keep restaurant photos as bundled imports for local portability.
+- Keep presentation changes separate from order submission and payment integrations to avoid disrupting checkout.
