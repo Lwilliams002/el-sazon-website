@@ -61,7 +61,7 @@ function Confirmation() {
     (async () => {
       try {
         const res = await fetch(
-          `${base}/functions/v1/submit-order?order_number=${encodeURIComponent(order!)}`,
+          `${base}/functions/v1/submit-order?order_number=${encodeURIComponent(order)}`,
           { headers: { apikey } },
         );
         if (!res.ok) throw new Error(await res.text());
@@ -84,7 +84,7 @@ function Confirmation() {
         <div className="mx-auto mt-8 flex h-16 w-16 items-center justify-center rounded-full bg-flame-gradient text-charcoal shadow-flame">
           <CheckCircle2 className="h-8 w-8" strokeWidth={2.2} />
         </div>
-        <h1 className="mt-6 text-4xl md:text-5xl">¡Gracias!</h1>
+        <h1 className="mt-6 text-3xl md:text-4xl">¡Gracias!</h1>
         <p className="mt-2 text-muted-foreground">
           Tu orden fue recibida. Te avisaremos cuando esté lista.
         </p>
@@ -92,15 +92,15 @@ function Confirmation() {
         {error && <p className="mt-6 text-sm text-destructive">{error}</p>}
 
         {data && (
-          <div className="mt-8 rounded-2xl border border-border bg-card/40 p-6 text-left">
+          <div className="mt-8 rounded-lg border border-border bg-card/40 p-6 text-left">
             <div className="flex items-baseline justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Orden</p>
-                <p className="font-display text-2xl text-secondary">{data.order_number}</p>
+                <p className="text-xs uppercase  text-muted-foreground">Orden</p>
+                <p className="font-semibold text-2xl text-secondary">{data.order_number}</p>
               </div>
               <div className="text-right">
-                <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Tipo</p>
-                <p className="font-display text-lg">
+                <p className="text-xs uppercase  text-muted-foreground">Tipo</p>
+                <p className="font-semibold text-lg">
                   {data.order_type === 'pickup' ? 'Recoger' : 'Entrega'}
                 </p>
               </div>
@@ -116,7 +116,7 @@ function Confirmation() {
 
             <ul className="mt-5 space-y-2 text-sm">
               {data.items.map((it, idx) => (
-                <li key={idx} className="flex justify-between">
+                <li key={idx} className="flex justify-between gap-4">
                   <span>
                     {it.quantity}× {it.name}
                   </span>
@@ -141,7 +141,7 @@ function Confirmation() {
         <div className="mt-8">
           <Link
             to="/"
-            className="inline-flex rounded-full border border-border bg-card/40 px-5 py-3 font-semibold text-foreground"
+            className="inline-flex rounded-md border border-border bg-card/40 px-5 py-3 font-semibold text-foreground"
           >
             Volver al inicio
           </Link>
@@ -153,7 +153,7 @@ function Confirmation() {
 
 function Row({ label, v, bold }: { label: string; v: number; bold?: boolean }) {
   return (
-    <div className={`flex justify-between ${bold ? 'font-display text-base text-secondary' : ''}`}>
+    <div className={`flex justify-between gap-4 ${bold ? 'font-semibold text-base text-secondary' : ''}`}>
       <span className={bold ? '' : 'text-muted-foreground'}>{label}</span>
       <span>${v.toFixed(2)}</span>
     </div>
