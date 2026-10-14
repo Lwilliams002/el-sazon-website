@@ -2,26 +2,14 @@
 @source "../src";
 @import "tw-animate-css";
 
-@layer base {
-  @font-face {
-    font-family: "Bebas Neue";
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url("https://fonts.gstatic.com/s/bebasneue/v14/JTUSjIg69CK48gW7PXoo9WlhyA.woff2") format("woff2");
-  }
-}
-
 @theme inline {
-  --font-display: "Bebas Neue", "Impact", sans-serif;
+  --font-display: "Barlow", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Barlow", ui-sans-serif, system-ui, sans-serif;
-  --font-script: "Caveat", "Brush Script MT", cursive;
-
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 22px;
-
+  --font-script: "Caveat", cursive;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 8px;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -46,62 +34,48 @@
   --color-gold: var(--gold);
   --color-charcoal: var(--charcoal);
 }
-
 :root {
-  /* Venezuelan flag-inspired fiery palette */
-  --background: oklch(0.16 0.02 30);          /* deep charcoal-black */
-  --foreground: oklch(0.97 0.01 80);
-  --card: oklch(0.21 0.025 30);
-  --card-foreground: oklch(0.97 0.01 80);
-  --popover: oklch(0.21 0.025 30);
-  --popover-foreground: oklch(0.97 0.01 80);
-
-  --primary: oklch(0.62 0.24 27);              /* fiery red */
-  --primary-foreground: oklch(0.98 0.01 80);
-  --secondary: oklch(0.85 0.18 85);            /* warm gold/yellow */
-  --secondary-foreground: oklch(0.18 0.02 30);
-
-  --muted: oklch(0.27 0.02 30);
-  --muted-foreground: oklch(0.74 0.02 60);
-  --accent: oklch(0.72 0.21 55);               /* orange flame */
-  --accent-foreground: oklch(0.16 0.02 30);
-  --destructive: oklch(0.55 0.22 27);
-  --destructive-foreground: oklch(0.98 0.01 80);
-
-  --border: oklch(0.32 0.03 40);
-  --input: oklch(0.32 0.03 40);
-  --ring: oklch(0.72 0.21 55);
-
-  --flame: oklch(0.65 0.26 28);
-  --ember: oklch(0.78 0.2 55);
-  --gold: oklch(0.86 0.18 88);
-  --charcoal: oklch(0.13 0.015 30);
-
-  --gradient-flame: linear-gradient(135deg, oklch(0.62 0.24 27) 0%, oklch(0.72 0.22 50) 50%, oklch(0.86 0.18 88) 100%);
-  --gradient-hero: linear-gradient(180deg, oklch(0.13 0.015 30) 0%, oklch(0.18 0.05 25) 60%, oklch(0.13 0.015 30) 100%);
-  --shadow-flame: 0 20px 60px -15px oklch(0.62 0.24 27 / 0.5);
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(160 9% 13%);
+  --card: hsl(150 12% 97%);
+  --card-foreground: hsl(160 9% 13%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(160 9% 13%);
+  --primary: hsl(3 76% 43%);
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(151 29% 28%);
+  --secondary-foreground: hsl(0 0% 100%);
+  --muted: hsl(150 10% 95%);
+  --muted-foreground: hsl(150 5% 37%);
+  --accent: hsl(45 94% 61%);
+  --accent-foreground: hsl(160 9% 13%);
+  --destructive: hsl(3 76% 43%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --border: hsl(150 8% 85%);
+  --input: hsl(150 8% 75%);
+  --ring: hsl(3 76% 43%);
+  --flame: var(--primary);
+  --ember: var(--primary);
+  --gold: var(--accent);
+  --charcoal: var(--primary-foreground);
+  --hero-shade: hsl(160 12% 7%);
+  --gradient-flame: linear-gradient(var(--primary), var(--primary));
+  --gradient-hero: linear-gradient(90deg, hsl(160 12% 7% / .88), hsl(160 12% 7% / .55) 55%, hsl(160 12% 7% / .12));
+  --shadow-flame: 0 8px 24px -10px hsl(160 9% 13% / .2);
 }
-
 @layer base {
-  * { border-color: var(--color-border); }
-  html { scroll-behavior: smooth; }
-  body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
-    font-family: var(--font-sans);
-    -webkit-font-smoothing: antialiased;
-  }
-  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: 0.02em; }
+  * { border-color: var(--border); }
+  html { scroll-behavior: smooth; scroll-padding-top: 110px; }
+  body { background: var(--background); color: var(--foreground); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; font-size: 16px; line-height: 1.6; }
+  h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; line-height: 1.15; letter-spacing: 0; }
+  button, a, input, textarea { -webkit-tap-highlight-color: transparent; }
+  input, textarea { font-size: 16px; }
+  section[id] { scroll-margin-top: 110px; }
 }
-
-@utility text-flame-gradient {
-  background: var(--gradient-flame);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-@utility bg-flame-gradient { background: var(--gradient-flame); }
+@utility text-flame-gradient { color: var(--primary); }
+@utility bg-flame-gradient { background: var(--primary); }
 @utility bg-hero-gradient { background: var(--gradient-hero); }
 @utility shadow-flame { box-shadow: var(--shadow-flame); }
-
+.hero-contrast { --foreground: hsl(0 0% 100%); --muted-foreground: hsl(0 0% 93%); color: var(--foreground); }
+.hero-overlay { background: var(--gradient-hero); }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
